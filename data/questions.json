@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "category": "TYT",
+    "lesson": "Türkçe",
+    "topic": "Sözcükte Anlam",
+    "year": "2023 TYT",
+    "question": "Aşağıdaki cümlelerin hangisinde 'görmek' sözcüğü 'anlamak, kavramak' anlamında kullanılmıştır?",
+    "options": [
+      "A) Uzun zamandır onu okulda görmüyorum.",
+      "B) Bu işin sonunun nereye varacağını net bir şekilde görüyorum.",
+      "C) Dün akşam rüyamda eski evimizi gördüm.",
+      "D) Hastalığı yüzünden artık uzağı iyi göremiyor.",
+      "E) Gördüğüm kadarıyla bu ev oldukça eski."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 2,
+    "category": "TYT",
+    "lesson": "Türkçe",
+    "topic": "Sözcükte Anlam",
+    "year": "2021 TYT",
+    "question": "Altı çizili sözün bu cümleye kattığı anlam aşağıdakilerin hangisinde vardır?",
+    "options": ["A) Seçenek 1", "B) Seçenek 2", "C) Seçenek 3", "D) Seçenek 4", "E) Seçenek 5"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 3,
+    "category": "TYT",
+    "lesson": "Türkçe",
+    "topic": "Sözcükte Anlam",
+    "year": "2018 TYT",
+    "question": "Bu parçada numaralanmış sözcüklerden hangisinin anlamı parantez içinde verilenle uyuşmamaktadır?",
+    "options": ["A) I", "B) II", "C) III", "D) IV", "E) V"],
+    "correctAnswer": 3
+  },
+  {
+    "id": 4,
+    "category": "TYT",
+    "lesson": "Matematik",
+    "topic": "Temel Kavramlar",
+    "year": "2022 TYT",
+    "question": "a, b ve c pozitif tam sayılar olmak üzere...",
+    "options": ["A) Yalnız I", "B) Yalnız II", "C) I ve II", "D) I ve III", "E) I, II ve III"],
+    "correctAnswer": 2
+  }
+]
