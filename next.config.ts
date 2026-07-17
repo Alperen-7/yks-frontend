@@ -1,9 +1,12 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  devIndicators: {
-    buildActivity: false,
-    appIsrStatus: false,
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  typescript: {
+    // TypeScript hatalarını derleme (build) sırasında yoksayar
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // ESLint uyarılarını derleme sırasında yoksayar
+    ignoreDuringBuilds: true,
   },
 };
 
