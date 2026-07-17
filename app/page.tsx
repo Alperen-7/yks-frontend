@@ -39,7 +39,7 @@ const Sidebar = ({
   const isAdmin = ["adminLogin", "admin"].includes(activeScreen);
 
   return (
-    <div className="w-72 h-screen bg-slate-900 text-white fixed left-0 top-0 flex flex-col shadow-2xl z-50 overflow-hidden">
+    <div className="w-full md:w-72 h-screen bg-slate-900 text-white fixed left-0 top-0 flex flex-col shadow-2xl z-50 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-br from-indigo-600 to-blue-700 opacity-20 -skew-y-12 transform origin-top-left z-0"></div>
       
       <div className="p-8 text-3xl font-extrabold tracking-tight cursor-pointer relative z-10 flex items-center gap-3" onClick={onHomeClick}>
@@ -387,7 +387,7 @@ export default function Home() {
         onAdminClick={goAdminPanel} 
       />
       
-      <div className="ml-72 flex-1 p-10 overflow-x-hidden">
+      <div className="ml-0 md:ml-72 flex-1 p-10 overflow-x-hidden">
         
         {/* =====================
             EKRAN: ANASAYFA
