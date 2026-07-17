@@ -84,7 +84,7 @@ export default function Home() {
   const RDP_IP = "192.168.1.110"; 
 
   // RENDER KOMUTUNU/BAĞLANTISINI BURAYA EKLEYEBİLİRSİN
-  const RENDER_URL = process.env.NEXT_PUBLIC_RENDER_URL || `https://yks-backend-csn4.onrender.com`;
+  const RENDER_URL = "https://yks-backend-csn4.onrender.com";
 
   const [activeScreen, setActiveScreen] = useState("home");
   
