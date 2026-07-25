@@ -141,7 +141,18 @@ export default function Home() {
       const response = await fetch(`${RENDER_URL}/get-records/`);
       const data = await response.json();
       if (data.status === "success") {
-        setDbRecords(data.data);
+        
+        // VERİTABANINDAN GELEN ALT TİRELİ İSİMLERİ, FRONTEND'İN ANLAYACAĞI HALE ÇEVİRİYORUZ
+        const normalizedData = data.data.map((item: any) => ({
+          ...item,
+          studyType: item.study_type || item.studyType,
+          examType: item.exam_type || item.examType,
+          quizQuestions: item.quiz_questions || item.quizQuestions,
+          userAnswers: item.user_answers || item.userAnswers,
+          quizScore: item.quiz_score || item.quizScore
+        }));
+        
+        setDbRecords(normalizedData);
       }
     } catch (error) {
       console.error("Raporlar çekilemedi", error);
