@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import yksData from '../data/data.json';
 
 type CategoryType = keyof typeof yksData;
@@ -83,7 +84,7 @@ const Sidebar = ({
 export default function Home() {
   const RDP_IP = "192.168.1.110"; 
 
-  // RENDER KOMUTUNU/BAĞLANTISINI BURAYA EKLEYEBİLİRSİN
+  // BAĞLANTI SABİTLENDİ
   const RENDER_URL = "https://yks-backend-csn4.onrender.com";
 
   const [activeScreen, setActiveScreen] = useState("home");
@@ -219,8 +220,8 @@ export default function Home() {
       lesson: isDeneme ? "Genel Deneme" : selectedLesson,
       topic: isDeneme ? examType : selectedTopic,
       studyType: studyType,
-      description: studyType === "konu" ? description : null,
-      stats: studyType !== "konu" ? { ...stats, net: isDeneme ? calculatedNet : null } : null,
+      description: (studyType === "konu" || description) ? description : null,
+      stats: studyType !== "konu" ? { ...stats, net: isDeneme ? calculatedNet : null, total: totalQ } : null,
       examType: isDeneme ? examType : null,
       quizQuestions: [],
       userAnswers: {},
@@ -370,6 +371,27 @@ export default function Home() {
     });
   }
   const chartLessons = Object.keys(lessonStats);
+
+  // Günlük Toplam Soru Çözümü Verisini Hazırlayan Fonksiyon (YENİ EKLENDİ)
+  const getDailyQuestionStats = () => {
+    const dailyData: Record<string, number> = {};
+    dbRecords.forEach(record => {
+      if (record.studyType === 'soru' && record.stats) {
+        const date = record.date;
+        const questionCount = parseInt(record.stats.total) || 0;
+        if (dailyData[date]) {
+          dailyData[date] += questionCount;
+        } else {
+          dailyData[date] = questionCount;
+        }
+      }
+    });
+    return Object.keys(dailyData).map(date => ({
+      name: date,
+      "Çözülen Soru": dailyData[date]
+    })).sort((a, b) => new Date(a.name).getTime() - new Date(b.name).getTime());
+  };
+  const questionChartData = getDailyQuestionStats();
 
   const historicalDenemeler = dbRecords
     .filter(r => r.studyType === "deneme")
@@ -818,7 +840,12 @@ export default function Home() {
                     {dailyRecords.map((record) => (
                       <div key={record.id} className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/40 border border-slate-100 relative overflow-hidden">
                         
-                        <div className="absolute top-0 right-0 bg-gradient-to-bl from-slate-900 to-slate-700 text-white text-xs font-black px-6 py-2 rounded-bl-2xl uppercase tracking-widest shadow-sm">
+                        {/* DİNAMİK ROZET TASARIMI YENİLENDİ */}
+                        <div className={`absolute top-0 right-0 text-white text-xs font-black px-6 py-2 rounded-bl-2xl uppercase tracking-widest shadow-sm ${
+                            record.studyType === "konu" ? "bg-yellow-500" :
+                            record.studyType === "soru" ? "bg-green-600" :
+                            "bg-slate-900"
+                        }`}>
                           {record.studyType === "konu" ? "Konu Anlatımı" : record.studyType === "soru" ? "Soru Çözümü" : "Deneme Sınavı"}
                         </div>
 
@@ -827,10 +854,11 @@ export default function Home() {
                           <p className="text-slate-500 font-medium">Konu / Sınav Türü: <span className="font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded-lg ml-2">{record.topic}</span></p>
                         </div>
 
-                        {record.studyType === "konu" && (
-                          <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 mb-4 shadow-inner">
-                            <span className="font-black text-blue-900 block mb-2 uppercase text-xs tracking-wider">Öğrencinin Notları:</span>
-                            <p className="text-blue-800 font-medium leading-relaxed">{record.description}</p>
+                        {/* ÖĞRENCİ YORUMU (DESCRIPTION) ALANI TÜM TİPLER İÇİN GÖRÜNÜR HALE GETİRİLDİ */}
+                        {record.description && (
+                          <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100 mb-6 shadow-inner">
+                            <span className="font-black text-amber-900 block mb-2 uppercase text-xs tracking-wider">Öğrencinin Notları / Yorumu:</span>
+                            <p className="text-amber-800 font-medium leading-relaxed italic">"{record.description}"</p>
                           </div>
                         )}
 
@@ -916,7 +944,34 @@ export default function Home() {
                 {activeAdminTab === "stats" && (
                   <div className="space-y-16">
                     
-                    {/* --- BÖLÜM 1: GÜNLÜK SORU ÇÖZÜMÜ --- */}
+                    {/* --- BÖLÜM YENİ: GÜNLÜK TOPLAM SORU GRAFİĞİ (RECHARTS) --- */}
+                    <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/40 border border-slate-100 mb-16">
+                      <h3 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-3">
+                        <span className="text-3xl">📈</span> Günlük Toplam Çözülen Soru Grafiği
+                      </h3>
+                      {questionChartData.length > 0 ? (
+                        <div className="h-80">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={questionChartData}>
+                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0"/>
+                              <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} tickLine={false} axisLine={false}/>
+                              <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} tickLine={false} axisLine={false}/>
+                              <Tooltip
+                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                                cursor={{fill: '#f1f5f9'}}
+                              />
+                              <Bar dataKey="Çözülen Soru" fill="#16a34a" radius={[6, 6, 0, 0]} barSize={40} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      ) : (
+                        <div className="flex h-40 items-center justify-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                          Henüz soru çözümü verisi bulunmuyor.
+                        </div>
+                      )}
+                    </div>
+
+                    {/* --- BÖLÜM 1: GÜNLÜK SORU ÇÖZÜMÜ (Derslere Göre) --- */}
                     {chartLessons.length > 0 ? (
                       <div>
                         <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
